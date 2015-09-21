@@ -38,8 +38,8 @@ public class ParameterType extends EntityBaseBean implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
 	private List<DataCollectionParameter> dataCollectionParameters = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
-	private List<DatafileParameter> datafileParameters = new ArrayList<DatafileParameter>();
+	/*@OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
+	private List<DatafileParameter> datafileParameters = new ArrayList<DatafileParameter>();*/
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
 	private List<DatasetParameter> datasetParameters = new ArrayList<DatasetParameter>();
@@ -96,9 +96,9 @@ public class ParameterType extends EntityBaseBean implements Serializable {
 		return dataCollectionParameters;
 	}
 
-	public List<DatafileParameter> getDatafileParameters() {
+	/*public List<DatafileParameter> getDatafileParameters() {
 		return datafileParameters;
-	}
+	}*/
 
 	public List<DatasetParameter> getDatasetParameters() {
 		return datasetParameters;
@@ -200,9 +200,9 @@ public class ParameterType extends EntityBaseBean implements Serializable {
 		this.dataCollectionParameters = dataCollectionParameters;
 	}
 
-	public void setDatafileParameters(List<DatafileParameter> datafileParameters) {
+	/*public void setDatafileParameters(List<DatafileParameter> datafileParameters) {
 		this.datafileParameters = datafileParameters;
-	}
+	}*/
 
 	public void setDatasetParameters(List<DatasetParameter> datasetParameters) {
 		this.datasetParameters = datasetParameters;

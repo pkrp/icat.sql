@@ -28,7 +28,9 @@ import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
@@ -72,8 +74,8 @@ public class GateKeeper {
 
 	private Session consumeSession;
 
-	@PersistenceContext(unitName = "icat")
-	private EntityManager gateKeeperManager;
+	private EntityManagerFactory gateKeeperManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("icat");
+	private EntityManager gateKeeperManager = gateKeeperManagerFactory.createEntityManager();;
 	private final Logger logger = Logger.getLogger(GateKeeper.class);
 
 	private int maxIdsInQuery;
@@ -93,7 +95,7 @@ public class GateKeeper {
 
 	@Resource(mappedName = "jms/ICAT/Synch")
 	private Topic synchTopic;
-
+	
 	/** Return true if allowed because destination table is public or because step is public */
 	public boolean allowed(Relationship r) {
 		String beanName = r.getDestinationBean().getSimpleName();

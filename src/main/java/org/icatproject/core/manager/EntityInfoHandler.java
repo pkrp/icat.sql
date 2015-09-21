@@ -1,5 +1,6 @@
 package org.icatproject.core.manager;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -185,9 +186,9 @@ public class EntityInfoHandler {
 
 	private static List<String> alphabeticEntityNames;
 	private static List<Class<? extends EntityBaseBean>> entities = Arrays.asList(User.class, Grouping.class,
-			UserGroup.class, Rule.class, PublicStep.class, Facility.class, DatafileFormat.class, Application.class,
+			UserGroup.class, Rule.class, PublicStep.class, Facility.class, Datafile.class, DatafileFormat.class, Application.class,
 			Instrument.class, InvestigationType.class, DatasetType.class, ParameterType.class, SampleType.class,
-			Investigation.class, Sample.class, Dataset.class, Datafile.class, FacilityCycle.class,
+			Investigation.class, Sample.class, Dataset.class, FacilityCycle.class,
 			DataCollection.class, DataCollectionDatafile.class, DataCollectionDataset.class,
 			DataCollectionParameter.class, DatafileParameter.class, DatasetParameter.class,
 			InvestigationParameter.class, Job.class, Keyword.class, Log.class, PermissibleStringValue.class,
@@ -205,7 +206,7 @@ public class EntityInfoHandler {
 	protected final static Logger logger = Logger.getLogger(EntityInfoHandler.class);
 
 	static {
-		for (Class<? extends EntityBaseBean> entity : entities) {
+		for (Class<? extends Serializable> entity : entities) {
 			entityNames.add(entity.getSimpleName());
 			exportEntityNames.add(entity.getSimpleName());
 		}
@@ -217,18 +218,19 @@ public class EntityInfoHandler {
 		return entityNames;
 	}
 
-	public static Class<EntityBaseBean> getClass(String tableName) throws IcatException {
+	public static Class<? extends EntityBaseBean> getClass(String tableName) throws IcatException {
 		try {
 			final Class<?> klass = Class.forName(Constants.ENTITY_PREFIX + tableName);
 			if (EntityBaseBean.class.isAssignableFrom(klass)) {
 				@SuppressWarnings("unchecked")
-				final Class<EntityBaseBean> eklass = (Class<EntityBaseBean>) klass;
+				final Class<? extends EntityBaseBean> eklass = (Class<? extends EntityBaseBean>) klass;
 				return eklass;
 			} else {
 				throw new IcatException(IcatException.IcatExceptionType.BAD_PARAMETER, tableName
 						+ " is not an EntityBaseBean");
 			}
 		} catch (final ClassNotFoundException e) {
+			e.printStackTrace();
 			throw new IcatException(IcatException.IcatExceptionType.BAD_PARAMETER, tableName
 					+ " is not an EntityBaseBean");
 		}
@@ -259,7 +261,7 @@ public class EntityInfoHandler {
 	}
 
 	private PrivateEntityInfo buildEi(Class<? extends EntityBaseBean> objectClass) throws IcatException {
-		logger.debug("Building PrivateEntityInfo for " + objectClass);
+		logger.info("Building PrivateEntityInfo for " + objectClass);
 		List<Field> fields = new ArrayList<Field>();
 		Class<?> cobj = objectClass;
 		while (cobj != null) {

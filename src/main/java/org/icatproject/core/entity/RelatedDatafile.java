@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.icatproject.core.entity.Datafile;
+
 @Comment("Used to represent an arbitrary relationship between data files")
 @SuppressWarnings("serial")
 @Entity

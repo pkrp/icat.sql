@@ -14,11 +14,32 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.eclipse.persistence.config.DescriptorCustomizer;
+import org.eclipse.persistence.descriptors.ClassDescriptor;
+import org.eclipse.persistence.expressions.ExpressionBuilder;
+import org.eclipse.persistence.mappings.querykeys.OneToManyQueryKey;
+import org.icatproject.core.entity.Datafile;
+
 @Comment("A data file format")
 @SuppressWarnings("serial")
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "FACILITY_ID", "NAME", "VERSION" }) })
-public class DatafileFormat extends EntityBaseBean implements Serializable {
+public class DatafileFormat extends EntityBaseBean implements Serializable, DescriptorCustomizer {
+	
+	@Override
+    public void customize(ClassDescriptor descriptor) throws Exception {
+        // Direct (basic) query for the Oracle DB's ROWID value
+        descriptor.addDirectQueryKey("rowId", "ROWID");
+ 
+        // 1:M query accessing all projects which have a M:1 teamLeader reference to this employee
+        // this can also be used to allow querying of large collections not wanted mapped
+        OneToManyQueryKey projectsQueryKey = new OneToManyQueryKey();
+        projectsQueryKey.setName("datafiles");
+        projectsQueryKey.setReferenceClass(Datafile.class);
+        ExpressionBuilder builder = new ExpressionBuilder();
+        projectsQueryKey.setJoinCriteria(builder.getField("DATAFILE.DATAFILEFORMAT").equal(builder.getParameter("DATAFILEFORMAT.ID")));
+        descriptor.addQueryKey(projectsQueryKey);
+    }
 
 	@Comment("The facility which has defined this format")
 	@JoinColumn(name = "FACILITY_ID", nullable = false)
@@ -33,9 +54,9 @@ public class DatafileFormat extends EntityBaseBean implements Serializable {
 		this.facility = facility;
 	}
 
-	@Comment("Files with this format")
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "datafileFormat")
-	private List<Datafile> datafiles = new ArrayList<Datafile>();
+	/*@Comment("Files with this format")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "datafileFormat")*/
+	//private List<Datafile> datafiles = new ArrayList<Datafile>();
 
 	@Comment("An informal description of the format")
 	private String description;
@@ -55,9 +76,9 @@ public class DatafileFormat extends EntityBaseBean implements Serializable {
 	public DatafileFormat() {
 	}
 
-	public List<Datafile> getDatafiles() {
+	/*public List<Datafile> getDatafiles() {
 		return this.datafiles;
-	}
+	}*/
 
 	public String getDescription() {
 		return this.description;
@@ -75,9 +96,9 @@ public class DatafileFormat extends EntityBaseBean implements Serializable {
 		return this.version;
 	}
 
-	public void setDatafiles(List<Datafile> datafiles) {
+	/*public void setDatafiles(List<Datafile> datafiles) {
 		this.datafiles = datafiles;
-	}
+	}*/
 
 	public void setDescription(String description) {
 		this.description = description;

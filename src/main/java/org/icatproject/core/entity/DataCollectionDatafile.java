@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.icatproject.core.entity.Datafile;
+
 @Comment("Represents a many-to-many relationship between a DataCollection and its Datafiles.")
 @SuppressWarnings("serial")
 @Entity

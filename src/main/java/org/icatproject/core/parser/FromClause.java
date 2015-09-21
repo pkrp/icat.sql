@@ -2,11 +2,13 @@ package org.icatproject.core.parser;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.icatproject.core.IcatException;
 import org.icatproject.core.entity.EntityBaseBean;
 import org.icatproject.core.manager.EntityInfoHandler;
 
 public class FromClause {
+	private static Logger logger = Logger.getLogger(FromClause.class);
 
 	private String string;
 	private Class<? extends EntityBaseBean> bean;
@@ -29,12 +31,16 @@ public class FromClause {
 			t = input.consume();
 			if (t.getType() == Token.Type.NAME) {
 				String val = t.getValue();
+				logger.info(val);
 				if (EntityInfoHandler.getAlphabeticEntityNames().contains(val)) {
+					logger.info("contains");
 					sb.append(" " + val);
 				} else {
 					if (!isQuery && state == State.NONE) {
+						logger.info("if");
 						sb = new StringBuilder();
 					} else {
+						logger.info("looking for a dott");
 						int dot = val.indexOf('.');
 						String idv = dot < 0 ? val.toUpperCase() : val.substring(0, dot)
 								.toUpperCase();
@@ -64,6 +70,7 @@ public class FromClause {
 						sb.append(" JOIN");
 					}
 				} else {
+					logger.info("elseeee");
 					sb.append(" " + t.getValue());
 				}
 			}
@@ -78,6 +85,8 @@ public class FromClause {
 					throw new ParserException("Attempt to define " + idVar
 							+ " more than once in FROM clause");
 				}
+				logger.info("got bean");
+				logger.info(t.getValue());
 				bean = EntityInfoHandler.getClass(t.getValue());
 			}
 			t = next;

@@ -80,13 +80,14 @@ public class SearchQuery {
 		boolean rootUser = this.gateKeeper.getRootUserNames().contains(userId);
 		input.consume(Token.Type.SELECT);
 		StringBuilder sb = new StringBuilder("SELECT ");
-
+		logger.info("consuming");
 		Token t = input.consume(Token.Type.NAME, Token.Type.DISTINCT, Token.Type.COUNT, Token.Type.MAX, Token.Type.MIN,
 				Token.Type.AVG, Token.Type.SUM);
 		String resultValue;
 
 		if (t.getType() == Token.Type.COUNT || t.getType() == Token.Type.MAX || t.getType() == Token.Type.MIN
 				|| t.getType() == Token.Type.AVG || t.getType() == Token.Type.SUM) {
+			logger.info("if");
 			Token aggregateFunction = t;
 			if (aggregateFunction.getType() == Token.Type.COUNT) {
 				noAuthzResult = aListWithZero;
@@ -119,16 +120,20 @@ public class SearchQuery {
 						+ " where only COUNT works without attributes");
 			}
 		} else {
+			logger.info("else");
 			sb.append("DISTINCT ");
 			boolean distinct = t.getType() == Token.Type.DISTINCT;
 			if (distinct) {
+				logger.info("distinct");
 				resultValue = input.consume(Token.Type.NAME).getValue();
 			} else {
+				logger.info("no dist");
 				resultValue = t.getValue();
 			}
 			int dot = resultValue.indexOf('.');
 			sb.append("$0$");
 			if (dot > 0) {
+				logger.info("dot");
 				if (distinct) {
 					sb.append(resultValue.substring(dot));
 				} else {
@@ -137,13 +142,18 @@ public class SearchQuery {
 			}
 		}
 		idVar = resultValue.split("\\.")[0].toUpperCase();
+		logger.info(idVar);
 		string = sb.toString();
+		logger.info("string");
+		logger.info(string);
 		Map<String, Integer> idVarMap = new HashMap<>();
 		idVarMap.put(idVar, 0);
 		boolean isQuery = true;
 		fromClause = new FromClause(input, idVar, idVarMap, isQuery);
+		logger.info("has form clause");
 		t = input.peek(0);
 		if (t != null && t.getType() == Token.Type.WHERE) {
+			logger.info("where");
 			whereClause = new WhereClause(input, idVarMap);
 			t = input.peek(0);
 		}
@@ -152,25 +162,33 @@ public class SearchQuery {
 										// without the $0
 		if (t != null
 				&& (t.getType() == Token.Type.GROUP || t.getType() == Token.Type.HAVING || t.getType() == Token.Type.ORDER)) {
+			logger.info("group having order");
 			otherJpqlClauses = new OtherJpqlClauses(input, idVarMap);
 			t = input.peek(0);
 		}
 		if (t != null && t.getType() == Token.Type.INCLUDE) {
+			logger.info("include!!!!");
 			includeClause = new IncludeClause(getBean(), input, idVar, gateKeeper);
+			logger.info("include!!!!");
 			t = input.peek(0);
 		}
 		if (t != null && t.getType() == Token.Type.LIMIT) {
+			logger.info("limit");
 			limitClause = new LimitClause(input);
 			t = input.peek(0);
 		}
 
 		if (includeClause == null && t != null && t.getType() == Token.Type.INCLUDE) {
+			logger.info("include and sth!!!!!!!!!!");
 			includeClause = new IncludeClause(getBean(), input, idVar, gateKeeper);
+			logger.info("include and sth!!!!!!!!!!");
 			t = input.peek(0);
 		}
 		if (t != null) {
+			logger.info("nulllllllll");
 			throw new ParserException(input, new Type[0]);
 		}
+		logger.info("after");
 
 	}
 
@@ -194,9 +212,9 @@ public class SearchQuery {
 	}
 
 	public String getJPQL(String userId, EntityManager manager) {
-		logger.debug("Processing: " + this);
-		logger.debug("=> fromClause: " + fromClause);
-		logger.debug("=> whereClause: " + whereClause);
+		logger.info("Processing: " + this);
+		logger.info("=> fromClause: " + fromClause);
+		logger.info("=> whereClause: " + whereClause);
 
 		// Trap case of selecting on id values where the LIMIT is ignored in the
 		// eclipselink generated SQL
@@ -210,7 +228,6 @@ public class SearchQuery {
 		StringBuilder sb = new StringBuilder(string);
 		sb.append(" FROM" + fromClause.toString());
 		String beanName = fromClause.getBean().getSimpleName();
-
 		boolean restricted;
 		List<Rule> rules = null;
 		if (gateKeeper.getRootUserNames().contains(userId)) {
@@ -281,6 +298,7 @@ public class SearchQuery {
 		}
 
 		if (otherJpqlClauses != null) {
+			logger.info(otherJpqlClauses.toString());
 			sb.append(" " + otherJpqlClauses.toString());
 		}
 		return sb.toString();

@@ -202,7 +202,7 @@ public class PropertyHandler {
 
 			/* notification.list */
 			String key = "notification.list";
-			if (props.has(key)) {
+		/*	if (props.has(key)) {
 				String notificationList = props.getString(key);
 				formattedProps.add(key + " " + notificationList);
 
@@ -233,7 +233,7 @@ public class PropertyHandler {
 						}
 					}
 				}
-			}
+			}*/
 
 			/* log.list */
 			key = "log.list";

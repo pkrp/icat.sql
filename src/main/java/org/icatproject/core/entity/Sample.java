@@ -27,7 +27,7 @@ import org.icatproject.core.IcatException;
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "INVESTIGATION_ID", "NAME" }) })
 public class Sample extends EntityBaseBean implements Serializable {
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
+	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "sample")
 	private List<Dataset> datasets = new ArrayList<>();
 
 	@JoinColumn(nullable = false, name = "INVESTIGATION_ID")

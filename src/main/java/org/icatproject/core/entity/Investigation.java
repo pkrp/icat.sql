@@ -30,7 +30,7 @@ import org.apache.lucene.document.TextField;
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "FACILITY_ID", "NAME", "VISIT_ID" }) })
 public class Investigation extends EntityBaseBean implements Serializable {
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "investigation")
+	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "investigation")
 	private List<Dataset> datasets = new ArrayList<>();
 
 	@Comment("The Digital Object Identifier associated with this investigation")

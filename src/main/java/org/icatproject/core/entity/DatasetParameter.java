@@ -23,9 +23,9 @@ import org.icatproject.core.manager.GateKeeper;
 @XmlRootElement
 public class DatasetParameter extends Parameter implements Serializable {
 
-	@Comment("The associated data set")
+	/*@Comment("The associated data set")
 	@JoinColumn(name = "DATASET_ID", nullable = false)
-	@ManyToOne
+	@ManyToOne*/
 	private Dataset dataset;
 
 	/* Needed for JPA */

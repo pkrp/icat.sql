@@ -20,7 +20,7 @@ import javax.persistence.UniqueConstraint;
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "FACILITY_ID", "NAME" }) })
 public class DatasetType extends EntityBaseBean implements Serializable {
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
+	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
 	private List<Dataset> datasets = new ArrayList<Dataset>();
 
 	@Comment("A description of this data set type")

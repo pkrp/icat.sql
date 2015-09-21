@@ -19,8 +19,8 @@ public class DataCollectionDataset extends EntityBaseBean implements Serializabl
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DataCollection dataCollection;
 
-	@JoinColumn(name = "DATASET_ID", nullable = false)
-	@ManyToOne(fetch = FetchType.LAZY)
+	/*@JoinColumn(name = "DATASET_ID", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)*/
 	private Dataset dataset;
 
 	public DataCollection getDataCollection() {
